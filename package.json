@@ -1,6 +1,11 @@
 {
   "name": "asteroid-party",
   "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node test.js"
+  },
   "description": "",
   "dependencies": {
     "express": "^4.13.4",
