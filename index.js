@@ -5,11 +5,20 @@ var app = require('express')(),
 const refreshInterval = 50;
 let players = [];
 
+function getRandomColor() {
+  const letters = '08F'; // 3 * 3 * 3 = 27 possible colours
+  let color = '#';
+  for (var i = 0; i < 3; i++) { // Keep it simple to #08F format
+    color += letters[Math.floor(Math.random() * 3)];
+  }
+  return color;
+}
+
 function addPlayer(id) {
   if (players.length == 0) {
-    setTimeout(() => updateState(), refreshInterval);
+    setInterval(() => updateState(), refreshInterval);
   }
-  players.push({id: id, x: 320, y: 240, direction: 2.0 * Math.PI * Math.random(), velocity: 1, firing: false, bulletActive: false, bulletX: 0, bulletY: 0, bulletDirection: 0});
+  players.push({id: id, x: 320, y: 240, direction: 2.0 * Math.PI * Math.random(), velocity: 1, firing: false, color: getRandomColor(), bulletActive: false, bulletX: 0, bulletY: 0, bulletDirection: 0});
 }
 
 function updateState() {
@@ -39,7 +48,6 @@ function updateState() {
   });
 
   io.emit('move', players);
-  setTimeout(() => updateState(), refreshInterval);
 }
 
 app.get('/', function(req, res){
@@ -76,14 +84,11 @@ io.on('connection', function(socket){
   });
 
   socket.on('disconnect', (reason) => {
-    if (reason === 'io server disconnect') {
-      // the disconnection was initiated by the server, you need to reconnect manually
-      // socket.connect();
-    }
-
-    console.log(`client ${reason} disconnected`);
-
+    console.log(`Client ${socket.id} disconnected because ${reason}`);
+    // remove player from players array
+    players.splice(players.findIndex(i => i.id === socket.id), 1);
   });
+
   socket.on('stop', function () {
     socket.broadcast.emit('stop');
   });

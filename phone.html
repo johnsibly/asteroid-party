@@ -42,11 +42,12 @@
 
     socket.on('move', function(players){
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = 'orange';
+      
       ctx.strokeStyle = 'white';
       players.forEach(player => {
+        ctx.fillStyle = player.color;
         ctx.beginPath();
-
+        
         const angle1 = player.direction;
         const angle2 = getAngleOffset(player.direction, 0.75);
         const angle3 = getAngleOffset(player.direction, 1.0);
