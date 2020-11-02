@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Asteroid Party</title>
+  <style type="text/css">
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: #000;
+    }
+  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <canvas id="canvas" width="640" height="480"></canvas>
+  <script type="text/javascript">
+
+    var states = {
+      STATIONARY: [0,0,0,0],
+      FORWARD: [0,1,1,0],
+      LEFT: [1,1,0,0],
+      RIGHT: [0,0,1,1],
+      BACKWARD: [1,0,0,1]
+    }
+
+    var socket = io(),
+      height = 1015,
+      circleRadius = 74,
+      circlePadding = 11,
+      c=document.getElementById("canvas"),
+      ctx=c.getContext("2d"),
+      a = 22,
+      circleX = (circleRadius + circlePadding),
+      state = states['STATIONARY'];
+
+    
+
+    $(document).keydown(function(e) {
+      console.log('keydown ' + e.keyCode);
+      e.preventDefault();
+      socket.emit('keydown', { keyCode: e.keyCode });
+    });
+
+    function getAngleOffset(direction, offset) {
+      newDirection = direction + offset * Math.PI;
+      while (newDirection > (2 * Math.PI)) {
+        newDirection -= (2 * Math.PI);
+      }
+      return newDirection;
+    }
+
+    socket.on('move', function(players){
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = 'orange';
+      ctx.strokeStyle = 'white';
+      players.forEach(player => {
+        ctx.beginPath();
+
+        const angle1 = player.direction;
+        const angle2 = getAngleOffset(player.direction, 0.75);
+        const angle3 = getAngleOffset(player.direction, 1.0);
+        const angle4 = getAngleOffset(player.direction, 1.25);
+
+        ctx.moveTo(player.x + 10 * Math.cos(angle1), player.y + 10 * Math.sin(angle1));
+        ctx.lineTo(player.x + 10 * Math.cos(angle2), player.y + 10 * Math.sin(angle2));
+        ctx.lineTo(player.x + 5 * Math.cos(angle3), player.y + 5 * Math.sin(angle3));
+        ctx.lineTo(player.x + 10 * Math.cos(angle4), player.y + 10 * Math.sin(angle4));
+        ctx.closePath();
+        ctx.stroke();
+        ctx.fill();
+      });
+      console.log('move ' + players);
+
+    });
+
+    socket.on('stop', function() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    })
+
+    $(document).keyup(function(e) {
+      e.preventDefault();
+      socket.emit('stop');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "name": "asteroid-party",
+  "version": "0.0.1",
+  "description": "",
+  "dependencies": {
+    "express": "^4.13.4",
+    "socket.io": "^2.3.0"
+  }
+}
