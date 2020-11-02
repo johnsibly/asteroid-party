@@ -1,6 +1,6 @@
-var app = require('express')(),
-  http = require('http').Server(app),
-  io = require('socket.io')(http);
+let app = require('express')(),
+    http = require('http').Server(app),
+    io = require('socket.io')(http);
 
 const refreshInterval = 50;
 let players = [];
@@ -8,7 +8,7 @@ let players = [];
 function getRandomColor() {
   const letters = '08F'; // 3 * 3 * 3 = 27 possible colours
   let color = '#';
-  for (var i = 0; i < 3; i++) { // Keep it simple to #08F format
+  for (let i = 0; i < 3; i++) { // Keep it simple to #08F format
     color += letters[Math.floor(Math.random() * 3)];
   }
   return color;
@@ -26,16 +26,7 @@ function updateState() {
     if (player.velocity > 0) {
       player.x = player.x + player.velocity * Math.cos(player.direction);
       player.y = player.y + player.velocity * Math.sin(player.direction);
-      if (player.x > 640){
-        player.x -= 640;
-      } else if (player.x < 0) {
-        player.x += 640;
-      }
-      if (player.y > 480){
-        player.y -= 480;
-      } else if (player.y < 0) {
-        player.y += 480;
-      }
+      wrapAroundScreen(player);
     }
 
     if (player.bulletActive) {
@@ -53,6 +44,19 @@ function updateState() {
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/phone.html');
 });
+
+function wrapAroundScreen(player) {
+  if (player.x > 640) {
+    player.x -= 640;
+  } else if (player.x < 0) {
+    player.x += 640;
+  }
+  if (player.y > 480) {
+    player.y -= 480;
+  } else if (player.y < 0) {
+    player.y += 480;
+  }
+}
 
 function getAngleOffset(direction, offset) {
   newDirection = direction + offset * Math.PI;
