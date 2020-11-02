@@ -32,15 +32,8 @@ function updateState() {
     if (player.bulletActive) {
       player.bulletX = player.bulletX + 3.0 * Math.cos(player.bulletDirection);
       player.bulletY = player.bulletY + 3.0 * Math.sin(player.bulletDirection);
-      if (player.bulletX > 640){
-        player.bulletX -= 640;
-      } else if (player.bulletX < 0) {
-        player.bulletX += 640;
-      }
-      if (player.bulletY > 480){
-        player.bulletY -= 480;
-      } else if (player.bulletY < 0) {
-        player.bulletY += 480;
+      if (player.bulletX > 640 || player.bulletX < 0 || player.bulletY > 480 || player.bulletY < 0) {
+        player.bulletActive = false;
       }
     }
 
