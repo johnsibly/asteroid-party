@@ -36,8 +36,6 @@ function updateState() {
         player.bulletActive = false;
       }
     }
-
-    // console.log(JSON.stringify(player));
   });
 
   io.emit('move', players);
@@ -75,9 +73,17 @@ io.on('connection', function(socket){
         player.bulletX = player.x;
         player.bulletY = player.y;
     }
-    // socket.broadcast.emit('keydown', msg);
   });
 
+  socket.on('disconnect', (reason) => {
+    if (reason === 'io server disconnect') {
+      // the disconnection was initiated by the server, you need to reconnect manually
+      // socket.connect();
+    }
+
+    console.log(`client ${reason} disconnected`);
+
+  });
   socket.on('stop', function () {
     socket.broadcast.emit('stop');
   });

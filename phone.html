@@ -9,6 +9,7 @@
     }
     body {
       background: #000;
+      color: #FFF;
     }
   </style>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -19,28 +20,14 @@
 </head>
 <body>
   <canvas id="canvas" width="640" height="480"></canvas>
+  <p id="latency"></p>
   <script type="text/javascript">
 
-    var states = {
-      STATIONARY: [0,0,0,0],
-      FORWARD: [0,1,1,0],
-      LEFT: [1,1,0,0],
-      RIGHT: [0,0,1,1],
-      BACKWARD: [1,0,0,1]
-    }
-
     var socket = io(),
-      height = 1015,
-      circleRadius = 74,
-      circlePadding = 11,
       c=document.getElementById("canvas"),
-      ctx=c.getContext("2d"),
-      a = 22,
-      circleX = (circleRadius + circlePadding),
-      state = states['STATIONARY'];
+      ctx=c.getContext("2d");
 
     $(document).keydown(function(e) {
-      console.log('keydown ' + e.keyCode);
       e.preventDefault();
       socket.emit('keydown', { keyCode: e.keyCode });
     });
@@ -79,8 +66,12 @@
           ctx.stroke();
         }
       });
-      console.log('move ' + players);
+    });
 
+    socket.on('pong', (latency) => {
+      const latencyString = `Latency ${latency} ms at ${new Date()}`
+      console.log(latencyString);
+      document.getElementById('latency').innerText = latencyString
     });
 
     socket.on('stop', function() {
