@@ -63,10 +63,10 @@ io.on('connection', function(socket){
     const player = players.find(player => player.id == socket.id)
     switch(msg.keyCode) {
       case 37: // Left
-        player.direction = getAngleOffset(player.direction, 0.1);
+        player.direction = getAngleOffset(player.direction, -0.1);
         break;
       case 39: // Right
-        player.direction = getAngleOffset(player.direction, -0.1);
+        player.direction = getAngleOffset(player.direction, 0.1);
         break;
     }
     // socket.broadcast.emit('keydown', msg);
