@@ -39,8 +39,6 @@
       circleX = (circleRadius + circlePadding),
       state = states['STATIONARY'];
 
-    
-
     $(document).keydown(function(e) {
       console.log('keydown ' + e.keyCode);
       e.preventDefault();
@@ -74,6 +72,12 @@
         ctx.closePath();
         ctx.stroke();
         ctx.fill();
+
+        if (player.bulletActive) {
+          ctx.beginPath();
+          ctx.arc(player.bulletX, player.bulletY, 3, 0, 2 * Math.PI);
+          ctx.stroke();
+        }
       });
       console.log('move ' + players);
 

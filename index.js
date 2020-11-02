@@ -9,7 +9,7 @@ function addPlayer(id) {
   if (players.length == 0) {
     setTimeout(() => updateState(), refreshInterval);
   }
-  players.push({id: id, x: 320, y: 240, direction: 2.0 * Math.PI * Math.random(), velocity: 1, firing: false});
+  players.push({id: id, x: 320, y: 240, direction: 2.0 * Math.PI * Math.random(), velocity: 1, firing: false, bulletActive: false, bulletX: 0, bulletY: 0, bulletDirection: 0});
 }
 
 function updateState() {
@@ -27,7 +27,21 @@ function updateState() {
       } else if (player.y < 0) {
         player.y += 480;
       }
-      
+    }
+
+    if (player.bulletActive) {
+      player.bulletX = player.bulletX + 3.0 * Math.cos(player.bulletDirection);
+      player.bulletY = player.bulletY + 3.0 * Math.sin(player.bulletDirection);
+      if (player.bulletX > 640){
+        player.bulletX -= 640;
+      } else if (player.bulletX < 0) {
+        player.bulletX += 640;
+      }
+      if (player.bulletY > 480){
+        player.bulletY -= 480;
+      } else if (player.bulletY < 0) {
+        player.bulletY += 480;
+      }
     }
 
     // console.log(JSON.stringify(player));
@@ -51,13 +65,7 @@ function getAngleOffset(direction, offset) {
 
 io.on('connection', function(socket){
   addPlayer(socket.id);
-
   console.log(`Client ${socket.id} connected`);
-
-  /*
-  socket.on('keypress'), function (msg) {
-    socket.broadcast.emit('keypress');
-  } */
 
   socket.on('keydown', function (msg) {
     const player = players.find(player => player.id == socket.id)
@@ -68,6 +76,11 @@ io.on('connection', function(socket){
       case 39: // Right
         player.direction = getAngleOffset(player.direction, 0.1);
         break;
+      case 32: // Spacebar
+        player.bulletActive = true;
+        player.bulletDirection = player.direction;
+        player.bulletX = player.x;
+        player.bulletY = player.y;
     }
     // socket.broadcast.emit('keydown', msg);
   });
