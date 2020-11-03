@@ -3,6 +3,7 @@ const app = require('express')(),
       io = require('socket.io')(http);
 
 const refreshInterval = 50;
+let intervalId = null;
 let players = [];
 
 function getRandomColor() {
@@ -16,7 +17,7 @@ function getRandomColor() {
 
 function addPlayer(id) {
   if (players.length == 0) {
-    setInterval(() => updateState(), refreshInterval);
+    intervalId = setInterval(() => updateState(), refreshInterval);
   }
   players.push({id: id, x: 320, y: 240, direction: 2.0 * Math.PI * Math.random(), velocity: 1, firing: false, color: getRandomColor(), bulletActive: false, bulletX: 0, bulletY: 0, bulletDirection: 0});
 }
@@ -35,7 +36,20 @@ function updateState() {
       if (player.bulletX > 640 || player.bulletX < 0 || player.bulletY > 480 || player.bulletY < 0) {
         player.bulletActive = false;
       }
+
+      players.forEach(playerCheckCollision => {
+        if (player.id != playerCheckCollision.id) {
+          if (player.bulletX > (playerCheckCollision.x - 10) && player.bulletX < (playerCheckCollision.x + 10) && player.bulletY > (playerCheckCollision.x - 10) && player.bulletY < (playerCheckCollision.y + 10)) {
+            // bullet has approx hit this ship -> remove it
+            removePlayer(playerCheckCollision.id);
+            addPlayer(playerCheckCollision.id);
+
+          }
+        }
+      })
     }
+
+
   });
 
   io.emit('move', players);
@@ -89,8 +103,7 @@ io.on('connection', function(socket){
 
   socket.on('disconnect', (reason) => {
     console.log(`Client ${socket.id} disconnected because ${reason}`);
-    // remove player from players array
-    players.splice(players.findIndex(i => i.id === socket.id), 1);
+    removePlayer(socket.id);
   });
 
   socket.on('stop', function () {
@@ -101,3 +114,11 @@ io.on('connection', function(socket){
 http.listen(process.env.PORT || 3000, function(){
   console.log(`listening on *:${process.env.PORT || 3000}`);
 });
+
+function removePlayer(id) {
+  players.splice(players.findIndex(i => i.id === id), 1);
+  if (players.length == 0) {
+    clearInterval(intervalId);
+  }
+}
+
