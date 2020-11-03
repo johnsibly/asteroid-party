@@ -1,6 +1,6 @@
-let app = require('express')(),
-    http = require('http').Server(app),
-    io = require('socket.io')(http);
+const app = require('express')(),
+      http = require('http').Server(app),
+      io = require('socket.io')(http);
 
 const refreshInterval = 50;
 let players = [];
