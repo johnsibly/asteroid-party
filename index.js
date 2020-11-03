@@ -2,6 +2,7 @@ const app = require('express')(),
       http = require('http').Server(app),
       io = require('socket.io')(http);
 
+const width = 375, height = 375;
 const refreshInterval = 50;
 let intervalId = null;
 let players = [];
@@ -20,7 +21,7 @@ function addPlayer(id) {
   if (players.length == 0) {
     intervalId = setInterval(() => updateState(), refreshInterval);
   }
-  players.push({id: id, x: 320, y: 240, direction: 2.0 * Math.PI * Math.random(), velocity: 1, firing: false, color: getRandomColor(), score: 0, bulletActive: false, bulletX: 0, bulletY: 0, bulletDirection: 0});
+  players.push({id: id, x: width/2.0, y: height/2.0, direction: 2.0 * Math.PI * Math.random(), velocity: 1, firing: false, color: getRandomColor(), score: 0, bulletActive: false, bulletX: 0, bulletY: 0, bulletDirection: 0});
 }
 
 function updateState() {
@@ -34,7 +35,7 @@ function updateState() {
     if (player.bulletActive) {
       player.bulletX = player.bulletX + 3.0 * Math.cos(player.bulletDirection);
       player.bulletY = player.bulletY + 3.0 * Math.sin(player.bulletDirection);
-      if (player.bulletX > 640 || player.bulletX < 0 || player.bulletY > 480 || player.bulletY < 0) {
+      if (player.bulletX > width || player.bulletX < 0 || player.bulletY > height || player.bulletY < 0) {
         player.bulletActive = false;
       }
 
@@ -61,15 +62,15 @@ app.get('/', function(req, res){
 });
 
 function wrapAroundScreen(player) {
-  if (player.x > 640) {
-    player.x -= 640;
+  if (player.x > width) {
+    player.x -= width;
   } else if (player.x < 0) {
-    player.x += 640;
+    player.x += width;
   }
-  if (player.y > 480) {
-    player.y -= 480;
+  if (player.y > height) {
+    player.y -= height;
   } else if (player.y < 0) {
-    player.y += 480;
+    player.y += height;
   }
 }
 
