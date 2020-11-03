@@ -15,25 +15,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
   <canvas id="canvas" width="640" height="480"></canvas>
   <p id="latency"></p>
-  <button onclick="socket.emit('keydown', { keyCode: 37 })">Left</button>
-  <button onclick="socket.emit('keydown', { keyCode: 39 })">Right</button>
-  <button onclick="socket.emit('keydown', { keyCode: 32 })">Fire</button>
+  <button id="button_left" onmousedown="handleKeyOrMouseDown(37)">Left</button>
+  <button id="button_right" onmousedown="handleKeyOrMouseDown(39)">Right</button>
+  <button id="button_fire" onmousedown="handleKeyOrMouseDown(32)">Fire</button>
   <script type="text/javascript">
+    document.getElementById("button_left").addEventListener("mousedown", e => handleKeyOrMouseDown(e, 37));
+    document.getElementById("button_right").addEventListener("mousedown", e => handleKeyOrMouseDown(e, 39));
+    document.getElementById("button_fire").addEventListener("mousedown", e => handleKeyOrMouseDown(e, 32));
+    document.addEventListener('keydown', event => handleKeyOrMouseDown(event, event.keyCode));
+    document.addEventListener('keyup', function(e) {
+      e.preventDefault();
+      socket.emit('stop');
+    });
+
+    function handleKeyOrMouseDown(e, keyCode) {
+      if (typeof e.preventDefault == 'function') { 
+        e.preventDefault();
+      }
+      socket.emit('keydown', { keyCode: keyCode });
+    }
 
     const socket = io(),
       c=document.getElementById("canvas"),
       ctx=c.getContext("2d");
-
-    $(document).keydown(function(e) {
-      e.preventDefault();
-      socket.emit('keydown', { keyCode: e.keyCode });
-    });
 
     function getAngleOffset(direction, offset) {
       newDirection = direction + offset * Math.PI;
@@ -86,11 +95,6 @@
     socket.on('stop', function() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     })
-
-    $(document).keyup(function(e) {
-      e.preventDefault();
-      socket.emit('stop');
-    });
   </script>
 </body>
 </html>

@@ -47,8 +47,6 @@ function updateState() {
         }
       })
     }
-
-
   });
 
   io.emit('move', players);
