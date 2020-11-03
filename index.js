@@ -19,7 +19,7 @@ function addPlayer(id) {
   if (players.length == 0) {
     intervalId = setInterval(() => updateState(), refreshInterval);
   }
-  players.push({id: id, x: 320, y: 240, direction: 2.0 * Math.PI * Math.random(), velocity: 1, firing: false, color: getRandomColor(), bulletActive: false, bulletX: 0, bulletY: 0, bulletDirection: 0});
+  players.push({id: id, x: 320, y: 240, direction: 2.0 * Math.PI * Math.random(), velocity: 1, firing: false, color: getRandomColor(), score: 0, bulletActive: false, bulletX: 0, bulletY: 0, bulletDirection: 0});
 }
 
 function updateState() {
@@ -40,10 +40,9 @@ function updateState() {
       players.forEach(playerCheckCollision => {
         if (player.id != playerCheckCollision.id) {
           if (player.bulletX > (playerCheckCollision.x - 10) && player.bulletX < (playerCheckCollision.x + 10) && player.bulletY > (playerCheckCollision.y - 10) && player.bulletY < (playerCheckCollision.y + 10)) {
-            // bullet has approx hit this ship -> remove it
             removePlayer(playerCheckCollision.id);
             addPlayer(playerCheckCollision.id);
-
+            player.score++;
           }
         }
       })

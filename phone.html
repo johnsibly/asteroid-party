@@ -21,6 +21,9 @@
 <body>
   <canvas id="canvas" width="640" height="480"></canvas>
   <p id="latency"></p>
+  <button onclick="socket.emit('keydown', { keyCode: 37 })">Left</button>
+  <button onclick="socket.emit('keydown', { keyCode: 39 })">Right</button>
+  <button onclick="socket.emit('keydown', { keyCode: 32 })">Fire</button>
   <script type="text/javascript">
 
     const socket = io(),
@@ -66,6 +69,11 @@
           ctx.arc(player.bulletX, player.bulletY, 3, 0, 2 * Math.PI);
           ctx.stroke();
         }
+        if (player.color === '#000') { // ensure text is not black on black
+          ctx.fillStyle = '#FFF';
+        }
+        const playerName = player.id === socket.id ? "You" : player.id.slice(0, 6);
+        ctx.fillText(`${playerName} [${player.score}]`, player.x, player.y - 20);
       });
     });
 
