@@ -39,7 +39,7 @@ function updateState() {
 
       players.forEach(playerCheckCollision => {
         if (player.id != playerCheckCollision.id) {
-          if (player.bulletX > (playerCheckCollision.x - 10) && player.bulletX < (playerCheckCollision.x + 10) && player.bulletY > (playerCheckCollision.x - 10) && player.bulletY < (playerCheckCollision.y + 10)) {
+          if (player.bulletX > (playerCheckCollision.x - 10) && player.bulletX < (playerCheckCollision.x + 10) && player.bulletY > (playerCheckCollision.y - 10) && player.bulletY < (playerCheckCollision.y + 10)) {
             // bullet has approx hit this ship -> remove it
             removePlayer(playerCheckCollision.id);
             addPlayer(playerCheckCollision.id);
