@@ -20,6 +20,7 @@
 <body>
   <canvas id="canvas" width="640" height="480"></canvas>
   <p id="latency"></p>
+  <p id="highScore"></p>
   <button id="button_left" onmousedown="handleKeyOrMouseDown(37)">Left</button>
   <button id="button_right" onmousedown="handleKeyOrMouseDown(39)">Right</button>
   <button id="button_fire" onmousedown="handleKeyOrMouseDown(32)">Fire</button>
@@ -52,11 +53,11 @@
       return newDirection;
     }
 
-    socket.on('move', function(players){
+    socket.on('move', function(state){
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
       ctx.strokeStyle = 'white';
-      players.forEach(player => {
+      state.players.forEach(player => {
         ctx.fillStyle = player.color;
         ctx.beginPath();
 
@@ -81,9 +82,12 @@
         if (player.color === '#000') { // ensure text is not black on black
           ctx.fillStyle = '#FFF';
         }
-        const playerName = player.id === socket.id ? "You" : player.id.slice(0, 6);
+        const playerName = player.id === socket.id ? `${player.id.slice(0, 6)} - You` : player.id.slice(0, 6);
         ctx.fillText(`${playerName} [${player.score}]`, player.x, player.y - 20);
       });
+      if (state.highScore.score > 0) {
+        document.getElementById('latency').innerText = `High score: ${state.highScore.name} - ${state.highScore.score}`;
+      }
     });
 
     socket.on('pong', (latency) => {

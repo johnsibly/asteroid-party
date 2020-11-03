@@ -5,6 +5,7 @@ const app = require('express')(),
 const refreshInterval = 50;
 let intervalId = null;
 let players = [];
+let highScore = {name: '', score: 0};
 
 function getRandomColor() {
   const letters = '08F'; // 3 * 3 * 3 = 27 possible colours
@@ -43,13 +44,16 @@ function updateState() {
             removePlayer(playerCheckCollision.id);
             addPlayer(playerCheckCollision.id);
             player.score++;
+            if (player.score > highScore.score) {
+              highScore.name = player.id;
+              highScore.score = player.score;
+            }
           }
         }
-      })
+      });
     }
   });
-
-  io.emit('move', players);
+  io.emit('move', {players, highScore});
 }
 
 app.get('/', function(req, res){
