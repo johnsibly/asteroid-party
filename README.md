@@ -2,14 +2,12 @@
 
 Mutliplayer asteroids game building using express and socket.io
 
-# Setup
-
-# On Computer
+## Setup
 
 * `npm install`
 * `node index.js`
 
-# Usage
+## Usage
 
 Open [http://localhost:3000](http://localhost:3000) on your computer and use arrow keys to control your spaceship.
 
