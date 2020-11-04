@@ -11,6 +11,11 @@
       background: #000;
       color: #FFF;
     }
+    button {
+      width: 120px;
+      height: 120px;
+      font-size: 32px;
+    }
   </style>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -19,11 +24,12 @@
 </head>
 <body>
   <canvas id="canvas" width="375" height="375"></canvas>
-  <p id="latency"></p>
-  <p id="highScore"></p>
+  <p>Use buttons or arrow keys</p>
   <button id="button_left" onmousedown="handleKeyOrMouseDown(37)">Left</button>
   <button id="button_right" onmousedown="handleKeyOrMouseDown(39)">Right</button>
   <button id="button_fire" onmousedown="handleKeyOrMouseDown(32)">Fire</button>
+  <p id="latency"></p>
+  <p id="highScore"></p>
   <script type="text/javascript">
     document.getElementById("button_left").addEventListener("mousedown", e => handleKeyOrMouseDown(e, 37));
     document.getElementById("button_right").addEventListener("mousedown", e => handleKeyOrMouseDown(e, 39));
@@ -91,7 +97,8 @@
     });
 
     socket.on('pong', (latency) => {
-      const latencyString = `Latency ${latency} ms at ${new Date()}`
+      const now = new Date();
+      const latencyString = `Latency ${latency}ms at ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`
       console.log(latencyString);
       document.getElementById('latency').innerText = latencyString
     });
