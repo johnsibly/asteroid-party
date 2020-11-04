@@ -33,6 +33,10 @@
       e.preventDefault();
       socket.emit('stop');
     });
+    const socket = io(),
+      c=document.getElementById("canvas"),
+      ctx=c.getContext("2d");
+    ctx.strokeStyle = 'white';
 
     function handleKeyOrMouseDown(e, keyCode) {
       if (typeof e.preventDefault == 'function') { 
@@ -40,10 +44,6 @@
       }
       socket.emit('keydown', { keyCode: keyCode });
     }
-
-    const socket = io(),
-      c=document.getElementById("canvas"),
-      ctx=c.getContext("2d");
 
     function getAngleOffset(direction, offset) {
       newDirection = direction + offset * Math.PI;
@@ -55,8 +55,8 @@
 
     socket.on('move', function(state){
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      ctx.strokeStyle = 'white';
+      ctx.strokeRect(0, 0, canvas.width, canvas.height);
+
       state.players.forEach(player => {
         ctx.fillStyle = player.color;
         ctx.beginPath();
