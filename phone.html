@@ -99,7 +99,7 @@
         ctx.fillText(`${playerName} [${player.score}]`, player.x, player.y - 20);
       });
       if (state.highScore.score > 0) {
-        document.getElementById('latency').innerText = `High score: ${state.highScore.name.slice(0, 6)} scored ${state.highScore.score}`;
+        document.getElementById('highScore').innerText = `High score: ${state.highScore.name.slice(0, 6)} scored ${state.highScore.score}`;
       }
     });
 
