@@ -107,10 +107,6 @@ io.on('connection', function(socket){
     console.log(`Client ${socket.id} disconnected because ${reason}`);
     removePlayer(socket.id);
   });
-
-  socket.on('stop', function () {
-    socket.broadcast.emit('stop');
-  });
 });
 
 http.listen(process.env.PORT || 3000, function(){
