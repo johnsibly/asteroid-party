@@ -40,12 +40,22 @@
   <p id="highScore"></p>
   <script type="text/javascript">
     let actionRepeatInterval = null;
+    document.getElementById("button_left").addEventListener("touchstart", e => handleKeyOrMouseDown(e, 37));
+    document.getElementById("button_right").addEventListener("touchstart", e => handleKeyOrMouseDown(e, 39));
+    document.getElementById("button_fire").addEventListener("touchstart", e => handleKeyOrMouseDown(e, 32));
+    document.getElementById("button_left").addEventListener("touchend", e => handleKeyOrMouseUp(e, 37));
+    document.getElementById("button_right").addEventListener("touchend", e => handleKeyOrMouseUp(e, 39));
+    document.getElementById("button_fire").addEventListener("touchend", e => handleKeyOrMouseUp(e, 32));
+    
     document.getElementById("button_left").addEventListener("mousedown", e => handleKeyOrMouseDown(e, 37));
     document.getElementById("button_right").addEventListener("mousedown", e => handleKeyOrMouseDown(e, 39));
     document.getElementById("button_fire").addEventListener("mousedown", e => handleKeyOrMouseDown(e, 32));
     document.getElementById("button_left").addEventListener("mouseup", e => handleKeyOrMouseUp(e, 37));
     document.getElementById("button_right").addEventListener("mouseup", e => handleKeyOrMouseUp(e, 39));
     document.getElementById("button_fire").addEventListener("mouseup", e => handleKeyOrMouseUp(e, 32));
+
+
+
     document.addEventListener('keydown', event => handleKeyOrMouseDown(event, event.keyCode));
     document.addEventListener('keyup', e => handleKeyOrMouseUp(e, e.keyCode));
 
