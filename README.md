@@ -10,9 +10,9 @@ Mutliplayer asteroids game building using express and socket.io
 ## Heroku deployment
 
 In addition to running this locally, I was keen to make accessable accross the internet, so ran on Heroku.
+Make sure you have Heroku set up by following there steps on https://devcenter.heroku.com/articles/getting-started-with-nodejs
 
-Do do this assuming you have heroku set up (otherwise follow locally https://devcenter.heroku.com/articles/getting-started-with-nodejs)
-
+Then do
 `heroku create`
 or 
 `heroku apps:create --region eu`
