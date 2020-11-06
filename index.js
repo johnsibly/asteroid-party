@@ -39,7 +39,19 @@ function addPlayer(id) {
   if (players.length == 0) {
     initialiseGame();
   }
-  players.push({id: id, name: shipNames[players.length], x: width/2.0, y: height/2.0, direction: 2.0 * Math.PI * Math.random(), velocity: 1, firing: false, color: getRandomColor(), score: 0, bulletActive: false, bulletX: 0, bulletY: 0, bulletDirection: 0});
+  players.push({id: id, 
+    name: shipNames[players.length], 
+    x: width/2.0, 
+    y: height/2.0, 
+    direction: 2.0 * Math.PI * Math.random(), 
+    velocity: 1, 
+    firing: false, 
+    color: getRandomColor(), 
+    score: 0, 
+    bulletActive: false, 
+    bulletX: 0, 
+    bulletY: 0, 
+    bulletDirection: 0});
 }
 
 function getRandDistFromCentre() {
@@ -48,9 +60,29 @@ function getRandDistFromCentre() {
 
 function addAsteroid() {
   if (asteroids.length < maxAsteroids) {
-    const distanceSet = [getRandDistFromCentre(), getRandDistFromCentre(), getRandDistFromCentre(), getRandDistFromCentre(), getRandDistFromCentre(), getRandDistFromCentre(), getRandDistFromCentre(), getRandDistFromCentre()];
-    asteroids.push({x: Math.floor(Math.random() * width), y: Math.floor(Math.random() * height), direction: 2.0 * Math.PI * Math.random(), velocity: 1, distanceSet: distanceSet});
+    const numbAsteroidVertices = 8.0;
+    let vertices = [];
+    for (let angle = 0; angle < 2.0 * Math.PI; angle+=((2.0 * Math.PI) / numbAsteroidVertices)) {
+      let distanceFromCentre = getRandDistFromCentre();
+      vertices.push({x: distanceFromCentre * Math.cos(angle), 
+                     y: distanceFromCentre * Math.sin(angle)});
+    }
+    asteroids.push({x: Math.floor(Math.random() * width), 
+                    y: Math.floor(Math.random() * height), 
+                    direction: 2.0 * Math.PI * Math.random(), 
+                    velocity: 1, 
+                    vertices: vertices});
   }
+}
+
+function isPointInPolygon(verticies, x, y) {
+  let c = 0;
+  for (let i = 0, j = verticies.length-1; i < nvert; i++, j++) {
+    if ( ((verticies[i].y > y) != (verticies[j].y > y)) &&
+     (testx < (verticies[j].x-verticies[i].x) * (y-verticies[i].y) / (verticies[j].y-verticies[i.y]) + verticies[i].x) )
+       c = !c;
+  }
+  return Boolean(c);
 }
 
 function updateState() {
@@ -80,6 +112,7 @@ function updateState() {
 
       for (let index = asteroids.length - 1; index >= 0; index--) {
         asteroidCheckCollision = asteroids[index];
+        // if (isPointInPolygon())
         if (player.bulletX > (asteroidCheckCollision.x - 10) && player.bulletX < (asteroidCheckCollision.x + 10) && player.bulletY > (asteroidCheckCollision.y - 10) && player.bulletY < (asteroidCheckCollision.y + 10)) {
           asteroids.splice(index, 1);
           increaseScore(player);

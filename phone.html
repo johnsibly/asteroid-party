@@ -128,10 +128,10 @@
 
       state.asteroids.forEach(asteroid => {
         ctx.beginPath();
-        ctx.moveTo(asteroid.x + asteroid.distanceSet[0], asteroid.y);
-        let angle = (2.0 * Math.PI) / asteroid.distanceSet.length;
-        for (let vertex = 1; vertex < asteroid.distanceSet.length; vertex++, angle+=((2.0 * Math.PI) / asteroid.distanceSet.length)) {
-          ctx.lineTo(asteroid.x + asteroid.distanceSet[vertex] * Math.cos(angle), asteroid.y + asteroid.distanceSet[vertex] * Math.sin(angle));
+        ctx.moveTo(asteroid.x + asteroid.vertices[0].x, asteroid.y + asteroid.vertices[0].y);
+        let angle = (2.0 * Math.PI) / asteroid.vertices.length;
+        for (let vertex = 1; vertex < asteroid.vertices.length; vertex++) {
+          ctx.lineTo(asteroid.x + asteroid.vertices[vertex].x, asteroid.y + asteroid.vertices[vertex].y);
         }
         ctx.closePath();
         ctx.stroke();
