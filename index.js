@@ -11,6 +11,7 @@ let asteroidSpawnIntervalId = null;
 let players = [];
 let asteroids = [];
 let highScore = {name: '', score: 0};
+let shipNames = ["Valiant", "Bandit", "Hurricane", "Tortoise", "Falcon", "Voyager", "Bastion", "Rhapsody", "Tranquility", "Gremlin", "Guardian", "Trident"];
 
 function getRandomColor() {
   const letters = '08F'; // 3 * 3 * 3 = 27 possible colours
@@ -21,7 +22,15 @@ function getRandomColor() {
   return color;
 }
 
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
 function initialiseGame() {
+  shuffleArray(shipNames);
   intervalId = setInterval(() => updateState(), refreshInterval);
   asteroidSpawnIntervalId = setInterval(() => addAsteroid(), asteroidSpawnInterval);
 }
@@ -30,7 +39,7 @@ function addPlayer(id) {
   if (players.length == 0) {
     initialiseGame();
   }
-  players.push({id: id, x: width/2.0, y: height/2.0, direction: 2.0 * Math.PI * Math.random(), velocity: 1, firing: false, color: getRandomColor(), score: 0, bulletActive: false, bulletX: 0, bulletY: 0, bulletDirection: 0});
+  players.push({id: id, name: shipNames[players.length], x: width/2.0, y: height/2.0, direction: 2.0 * Math.PI * Math.random(), velocity: 1, firing: false, color: getRandomColor(), score: 0, bulletActive: false, bulletX: 0, bulletY: 0, bulletDirection: 0});
 }
 
 function getRandDistFromCentre() {
@@ -64,11 +73,7 @@ function updateState() {
           if (player.bulletX > (playerCheckCollision.x - 10) && player.bulletX < (playerCheckCollision.x + 10) && player.bulletY > (playerCheckCollision.y - 10) && player.bulletY < (playerCheckCollision.y + 10)) {
             removePlayer(playerCheckCollision.id); // There may be a bug here if two players are hit at once
             addPlayer(playerCheckCollision.id);
-            player.score++;
-            if (player.score > highScore.score) {
-              highScore.name = player.id;
-              highScore.score = player.score;
-            }
+            increaseScore(player);
           }
         }
       });
@@ -77,11 +82,7 @@ function updateState() {
         asteroidCheckCollision = asteroids[index];
         if (player.bulletX > (asteroidCheckCollision.x - 10) && player.bulletX < (asteroidCheckCollision.x + 10) && player.bulletY > (asteroidCheckCollision.y - 10) && player.bulletY < (asteroidCheckCollision.y + 10)) {
           asteroids.splice(index, 1);
-          player.score++;
-          if (player.score > highScore.score) {
-            highScore.name = player.id;
-            highScore.score = player.score;
-          }
+          increaseScore(player);
         }
       }
     }
@@ -101,6 +102,14 @@ function updateState() {
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/phone.html');
 });
+
+function increaseScore(player) {
+  player.score++;
+  if (player.score > highScore.score) {
+    highScore.name = player.name;
+    highScore.score = player.score;
+  }
+}
 
 function wrapAroundScreen(body) {
   if (body.x > width) {
