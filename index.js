@@ -4,8 +4,12 @@ const app = require('express')(),
 
 const width = 375, height = 375;
 const refreshInterval = 50;
+const asteroidSpawnInterval = 5000;
+const maxAsteroids = 5;
 let intervalId = null;
+let asteroidSpawnIntervalId = null;
 let players = [];
+let asteroids = [];
 let highScore = {name: '', score: 0};
 
 function getRandomColor() {
@@ -17,11 +21,27 @@ function getRandomColor() {
   return color;
 }
 
+function initialiseGame() {
+  intervalId = setInterval(() => updateState(), refreshInterval);
+  asteroidSpawnIntervalId = setInterval(() => addAsteroid(), asteroidSpawnInterval);
+}
+
 function addPlayer(id) {
   if (players.length == 0) {
-    intervalId = setInterval(() => updateState(), refreshInterval);
+    initialiseGame();
   }
   players.push({id: id, x: width/2.0, y: height/2.0, direction: 2.0 * Math.PI * Math.random(), velocity: 1, firing: false, color: getRandomColor(), score: 0, bulletActive: false, bulletX: 0, bulletY: 0, bulletDirection: 0});
+}
+
+function getRandDistFromCentre() {
+  return 10 * (1 + Math.floor(2.0 * Math.random()));
+}
+
+function addAsteroid() {
+  if (asteroids.length < maxAsteroids) {
+    const distanceSet = [getRandDistFromCentre(), getRandDistFromCentre(), getRandDistFromCentre(), getRandDistFromCentre(), getRandDistFromCentre(), getRandDistFromCentre(), getRandDistFromCentre(), getRandDistFromCentre()];
+    asteroids.push({x: Math.floor(Math.random() * width), y: Math.floor(Math.random() * height), direction: 2.0 * Math.PI * Math.random(), velocity: 1, distanceSet: distanceSet});
+  }
 }
 
 function updateState() {
@@ -42,7 +62,7 @@ function updateState() {
       players.forEach(playerCheckCollision => {
         if (player.id != playerCheckCollision.id) {
           if (player.bulletX > (playerCheckCollision.x - 10) && player.bulletX < (playerCheckCollision.x + 10) && player.bulletY > (playerCheckCollision.y - 10) && player.bulletY < (playerCheckCollision.y + 10)) {
-            removePlayer(playerCheckCollision.id);
+            removePlayer(playerCheckCollision.id); // There may be a bug here if two players are hit at once
             addPlayer(playerCheckCollision.id);
             player.score++;
             if (player.score > highScore.score) {
@@ -52,25 +72,46 @@ function updateState() {
           }
         }
       });
+
+      for (let index = asteroids.length - 1; index >= 0; index--) {
+        asteroidCheckCollision = asteroids[index];
+        if (player.bulletX > (asteroidCheckCollision.x - 10) && player.bulletX < (asteroidCheckCollision.x + 10) && player.bulletY > (asteroidCheckCollision.y - 10) && player.bulletY < (asteroidCheckCollision.y + 10)) {
+          asteroids.splice(index, 1);
+          player.score++;
+          if (player.score > highScore.score) {
+            highScore.name = player.id;
+            highScore.score = player.score;
+          }
+        }
+      }
     }
   });
-  io.emit('move', {players, highScore});
+
+  asteroids.forEach(asteroid => {
+    if (asteroid.velocity > 0) {
+      asteroid.x = asteroid.x + asteroid.velocity * Math.cos(asteroid.direction);
+      asteroid.y = asteroid.y + asteroid.velocity * Math.sin(asteroid.direction);
+      wrapAroundScreen(asteroid);
+    }
+  });
+
+  io.emit('move', {players, asteroids, highScore});
 }
 
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/phone.html');
 });
 
-function wrapAroundScreen(player) {
-  if (player.x > width) {
-    player.x -= width;
-  } else if (player.x < 0) {
-    player.x += width;
+function wrapAroundScreen(body) {
+  if (body.x > width) {
+    body.x -= width;
+  } else if (body.x < 0) {
+    body.x += width;
   }
-  if (player.y > height) {
-    player.y -= height;
-  } else if (player.y < 0) {
-    player.y += height;
+  if (body.y > height) {
+    body.y -= height;
+  } else if (body.y < 0) {
+    body.y += height;
   }
 }
 
