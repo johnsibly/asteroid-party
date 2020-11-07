@@ -64,8 +64,8 @@ function addAsteroid() {
     let vertices = [];
     for (let angle = 0; angle < 2.0 * Math.PI; angle+=((2.0 * Math.PI) / numbAsteroidVertices)) {
       let distanceFromCentre = getRandDistFromCentre();
-      vertices.push({x: distanceFromCentre * Math.cos(angle), 
-                     y: distanceFromCentre * Math.sin(angle)});
+      vertices.push({x: Math.floor(distanceFromCentre * Math.cos(angle)), 
+                     y: Math.floor(distanceFromCentre * Math.sin(angle))});
     }
     asteroids.push({x: Math.floor(Math.random() * width), 
                     y: Math.floor(Math.random() * height), 
@@ -73,16 +73,6 @@ function addAsteroid() {
                     velocity: 1, 
                     vertices: vertices});
   }
-}
-
-function isPointInPolygon(verticies, x, y) {
-  let c = 0;
-  for (let i = 0, j = verticies.length-1; i < nvert; i++, j++) {
-    if ( ((verticies[i].y > y) != (verticies[j].y > y)) &&
-     (testx < (verticies[j].x-verticies[i].x) * (y-verticies[i].y) / (verticies[j].y-verticies[i.y]) + verticies[i].x) )
-       c = !c;
-  }
-  return Boolean(c);
 }
 
 function updateState() {
@@ -112,8 +102,7 @@ function updateState() {
 
       for (let index = asteroids.length - 1; index >= 0; index--) {
         asteroidCheckCollision = asteroids[index];
-        // if (isPointInPolygon())
-        if (player.bulletX > (asteroidCheckCollision.x - 10) && player.bulletX < (asteroidCheckCollision.x + 10) && player.bulletY > (asteroidCheckCollision.y - 10) && player.bulletY < (asteroidCheckCollision.y + 10)) {
+        if (isPointInPolygon(asteroidCheckCollision.vertices, Math.floor(player.bulletX - asteroidCheckCollision.x), Math.floor(player.bulletY - asteroidCheckCollision.y))) {
           asteroids.splice(index, 1);
           increaseScore(player);
         }
@@ -130,6 +119,33 @@ function updateState() {
   });
 
   io.emit('move', {players, asteroids, highScore});
+}
+
+// Approach from https://stackoverflow.com/questions/217578/how-can-i-determine-whether-a-2d-point-is-within-a-polygon/2922778#2922778
+function isPointInPolygon(vertices, testx, testy) {
+  var minX = vertices[0].x, maxX = vertices[0].x;
+  var minY = vertices[0].y, maxY = vertices[0].y;
+  for (var n = 1; n < vertices.length; n++) {
+      var q = vertices[n];
+      minX = Math.min(q.x, minX);
+      maxX = Math.max(q.x, maxX);
+      minY = Math.min(q.y, minY);
+      maxY = Math.max(q.y, maxY);
+  }
+
+  if (testx < minX || testx > maxX || testy < minY || testy > maxY) {
+      return false;
+  }
+
+  let isInside = false;
+  for (let i = 0, j = vertices.length-1; i < vertices.length; j = i, i++) {
+    if (((vertices[i].y > testy) != (vertices[j].y > testy))) {
+      if (testx < (((vertices[j].x-vertices[i].x) * (testy-vertices[i].y) / (vertices[j].y-vertices[i].y)) + vertices[i].x)) {
+        isInside = !isInside;
+      }
+    }
+  }
+  return isInside;
 }
 
 app.get('/', function(req, res){
