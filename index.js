@@ -1,4 +1,5 @@
 const app = require('express')(),
+      express = require('express');
       http = require('http').Server(app),
       io = require('socket.io')(http);
 
@@ -148,15 +149,18 @@ function isPointInPolygon(vertices, testx, testy) {
   return isInside;
 }
 
-app.get('/', function(req, res){
-  res.sendFile(__dirname + '/phone.html');
-});
-
 function increaseScore(player) {
   player.score++;
   if (player.score > highScore.score) {
     highScore.name = player.name;
     highScore.score = player.score;
+  }
+}
+
+function removePlayer(id) {
+  players.splice(players.findIndex(i => i.id === id), 1);
+  if (players.length == 0) {
+    clearInterval(intervalId);
   }
 }
 
@@ -212,10 +216,8 @@ http.listen(process.env.PORT || 3000, function(){
   console.log(`listening on *:${process.env.PORT || 3000}`);
 });
 
-function removePlayer(id) {
-  players.splice(players.findIndex(i => i.id === id), 1);
-  if (players.length == 0) {
-    clearInterval(intervalId);
-  }
-}
+app.get('/', function(req, res){
+  res.sendFile(__dirname + '/public/phone.html');
+});
 
+app.use(express.static('public'));
