@@ -1,0 +1,22 @@
+* {
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    background: #000;
+    color: #FFF;
+  }
+  button {
+    width: 120px;
+    height: 120px;
+    font-size: 32px;
+    text-align: center;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+    -webkit-touch-callout: none !important; /* Prevent log press event on buttons */
+    background: linear-gradient("black", "black")
+  }
