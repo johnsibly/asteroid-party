@@ -100,16 +100,51 @@ function updateState() {
           }
         }
       });
+    }
 
-      for (let index = asteroids.length - 1; index >= 0; index--) {
-        asteroidCheckCollision = asteroids[index];
-        if (isPointInPolygon(asteroidCheckCollision.vertices, Math.floor(player.bulletX - asteroidCheckCollision.x), Math.floor(player.bulletY - asteroidCheckCollision.y))) {
+    for (let index = asteroids.length - 1; index >= 0; index--) {
+      asteroidCheckCollision = asteroids[index];
+      if (player.bulletActive) {
+        if (isPointInPolygon(asteroidCheckCollision.vertices, player.bulletX - asteroidCheckCollision.x, player.bulletY - asteroidCheckCollision.y)) {
           asteroids.splice(index, 1);
           increaseScore(player);
         }
       }
+
+      const points = getShipPoints(player);
+      for(let n = 0; n < points.length; n++) {
+        const point = points[n];
+        if (isPointInPolygon(asteroidCheckCollision.vertices, point.x - asteroidCheckCollision.x, point.y - asteroidCheckCollision.y))
+        {
+          removePlayer(player.id); // There may be a bug here if two players are hit at once
+          addPlayer(player.id);
+          break;
+        }
+      };
     }
   });
+
+  function getAngleOffset(direction, offset) {
+    newDirection = direction + offset * Math.PI;
+    while (newDirection > (2 * Math.PI)) {
+      newDirection -= (2 * Math.PI);
+    }
+    return newDirection;
+  }
+
+  function getShipPoints(player) {
+    const angle1 = player.direction;
+    const angle2 = getAngleOffset(player.direction, 0.75);
+    const angle3 = getAngleOffset(player.direction, 1.0);
+    const angle4 = getAngleOffset(player.direction, 1.25);
+
+    let points = [];
+    points.push({x: player.x + 10 * Math.cos(angle1), y: player.y + 10 * Math.sin(angle1)})
+    points.push({x: player.x + 10 * Math.cos(angle2), y: player.y + 10 * Math.sin(angle2)})
+    points.push({x: player.x + 5 * Math.cos(angle3), y: player.y + 5 * Math.sin(angle3)})
+    points.push({x: player.x + 10 * Math.cos(angle4), y: player.y + 10 * Math.sin(angle4)})
+    return points;
+  }
 
   asteroids.forEach(asteroid => {
     if (asteroid.velocity > 0) {
