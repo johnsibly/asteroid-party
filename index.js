@@ -221,3 +221,4 @@ app.get('/', function(req, res){
 });
 
 app.use(express.static('public'));
+app.use('/favicon.ico', express.static('public/favicon.ico'));
