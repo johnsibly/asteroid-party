@@ -5,7 +5,7 @@ Mutliplayer asteroids game building using express and socket.io
 ## Setup
 
 * `npm install`
-* `node index.js`
+* `node asteroids.js`
 
 ## Heroku deployment
 

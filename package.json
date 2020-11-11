@@ -1,12 +1,15 @@
 {
   "name": "asteroid-party",
   "version": "0.0.1",
-  "main": "index.js",
+  "main": "asteroids.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node asteroids.js",
     "test": "node test.js"
   },
   "description": "",
+  "devDependencies": {
+    "jest": "^26.5.3"
+  },
   "dependencies": {
     "express": "^4.13.4",
     "socket.io": "^2.3.0"
