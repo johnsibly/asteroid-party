@@ -2,6 +2,8 @@ module.exports.isPointInPolygon = isPointInPolygon;
 module.exports.processAction = processAction;
 module.exports.addPlayer = addPlayer;
 module.exports.removePlayer = removePlayer;
+module.exports.doesCircleOverlapPolygon = doesCircleOverlapPolygon;
+
 let _io = null;
 
 let players = [];
@@ -10,6 +12,8 @@ let highScore = {name: '', score: 0};
 const width = 375, height = 375;
 const refreshInterval = 50;
 const asteroidSpawnInterval = 5000;
+const bulletSpeed = 3.0;
+const bulletRadius = 3;
 const maxAsteroids = 5;
 let asteroidSpawnIntervalId = null;
 let intervalId = null;
@@ -105,6 +109,7 @@ function getRandDistFromCentre() {
   return 10 * (1 + Math.floor(2.0 * Math.random()));
 }
 
+
 function updateState() {
   players.forEach(player => {
     if (player.velocity > 0) {
@@ -114,8 +119,8 @@ function updateState() {
     }
     
     if (player.bulletActive) {
-      player.bulletX = player.bulletX + 3.0 * Math.cos(player.bulletDirection);
-      player.bulletY = player.bulletY + 3.0 * Math.sin(player.bulletDirection);
+      player.bulletX = player.bulletX + bulletSpeed * Math.cos(player.bulletDirection);
+      player.bulletY = player.bulletY + bulletSpeed * Math.sin(player.bulletDirection);
       if (player.bulletX > width || player.bulletX < 0 || player.bulletY > height || player.bulletY < 0) {
         player.bulletActive = false;
       }
@@ -134,7 +139,7 @@ function updateState() {
     for (let index = asteroids.length - 1; index >= 0; index--) {
       asteroidCheckCollision = asteroids[index];
       if (player.bulletActive) {
-        if (isPointInPolygon(asteroidCheckCollision.vertices, player.bulletX - asteroidCheckCollision.x, player.bulletY - asteroidCheckCollision.y)) {
+        if (doesCircleOverlapPolygon(asteroidCheckCollision.vertices, player.bulletX - asteroidCheckCollision.x, player.bulletY - asteroidCheckCollision.y)) {
           asteroids.splice(index, 1);
           increaseScore(player);
         }
@@ -152,7 +157,7 @@ function updateState() {
       };
     }
   });
-    
+
   function getShipPoints(player) {
     const angle1 = player.direction;
     const angle2 = getAngleOffset(player.direction, 0.75);
@@ -175,6 +180,20 @@ function updateState() {
     }
   });
   _io.emit('move', {players, asteroids, highScore});
+}
+
+function doesCircleOverlapPolygon(vertices, testx, testy) {
+  const numSides = 10; // assume circle approximates to a decagon (10 sides)
+  points = [];
+  for (let angle = 0; angle < 2.0 * Math.PI; angle+=((2.0 * Math.PI) / numSides)) {
+    points.push({x: testx + bulletRadius * Math.cos(angle), 
+                 y: testy + bulletRadius * Math.sin(angle)});
+  }
+  let doesOverlap = false;
+  for (let i = 0; !doesOverlap && i < points.length; i++) {
+    doesOverlap = isPointInPolygon(vertices, points[i].x, points[i].y);
+  }
+  return doesOverlap;
 }
 
 // Approach from https://stackoverflow.com/questions/217578/how-can-i-determine-whether-a-2d-point-is-within-a-polygon/2922778#2922778

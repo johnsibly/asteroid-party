@@ -1,5 +1,6 @@
 const asteroids = require('../gameLogic.js');
 const isPointInPolygon = asteroids.isPointInPolygon;
+const doesCircleOverlapPolygon = asteroids.doesCircleOverlapPolygon;
 
 beforeEach(() => {
 });
@@ -15,3 +16,12 @@ it('Test object on edge of concave polygon', () => {
     const testx = 2, testy = 2;
     expect(isPointInPolygon(polygon, testx, testy)).toEqual(true);
 });
+
+it('Test circle just overlapping rectangle', () => {
+    const polygon = [{x:1, y:1}, {x:1, y:10}, {x:10, y:10}, {x:10, y:1}];
+    const testx = 0.9, testy = 0.9;
+    expect(doesCircleOverlapPolygon(polygon, testx, testy)).toEqual(true);
+});
+
+
+
