@@ -11,6 +11,7 @@
     height: 120px;
     font-size: 32px;
     text-align: center;
+    color: white;
     -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
     -khtml-user-select: none; /* Konqueror HTML */
@@ -18,5 +19,7 @@
     -ms-user-select: none; /* Internet Explorer/Edge */
     user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
     -webkit-touch-callout: none !important; /* Prevent log press event on buttons */
-    background: linear-gradient("black", "black")
+    background: linear-gradient("black", "black");
+    -webkit-appearance: none;
+    border-radius: 0;
   }
