@@ -33,6 +33,16 @@ git remote add heroku https://git.heroku.com/asteroid-party.git
 
 git push heroku main
 
+## Docker
+
+Build image using
+
+`docker build -t <your username>/asteroid-party .`
+
+Run using 
+
+`docker run -p 3000:3000 -d <your username>/asteroid-party`
+
 ## Usage
 
 Open [http://localhost:3000](http://localhost:3000) on your computer and use arrow keys to control your spaceship.
