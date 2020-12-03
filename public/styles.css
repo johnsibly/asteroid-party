@@ -19,7 +19,7 @@
     -ms-user-select: none; /* Internet Explorer/Edge */
     user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
     -webkit-touch-callout: none !important; /* Prevent log press event on buttons */
-    background: linear-gradient("black", "black");
+    background-color: black;
     -webkit-appearance: none;
     border-radius: 0;
   }
