@@ -1,16 +1,23 @@
 # asteroid-party
 
-Mutliplayer asteroids game building using express and socket.io
+Mutliplayer asteroids game built using express and socket.io
 
 ## Setup
 
 * `npm install`
-* `node asteroids.js`
+
+## Usage
+
+Run locally using 
+
+`node asteroids.js`
+
+Open [http://localhost:3000](http://localhost:3000) on your computer and use arrow keys to control your spaceship.
 
 ## Heroku deployment
 
-In addition to running this locally, I was keen to make accessable accross the internet, so ran on Heroku.
-Make sure you have Heroku set up by following there steps on https://devcenter.heroku.com/articles/getting-started-with-nodejs
+To make accessable globally, below are instructions for running on Heroku
+Make sure you have Heroku set up by following these steps https://devcenter.heroku.com/articles/getting-started-with-nodejs
 
 ### Creating for the first time
 
@@ -33,6 +40,10 @@ git remote add heroku https://git.heroku.com/asteroid-party.git
 
 git push heroku main
 
+### Test on your desktop or mobile browser 
+
+https://asteroid-party.herokuapp.com/
+
 ## Docker
 
 Build image using
@@ -43,7 +54,4 @@ Run using
 
 `docker run -p 3000:3000 -d <your username>/asteroid-party`
 
-## Usage
-
-Open [http://localhost:3000](http://localhost:3000) on your computer and use arrow keys to control your spaceship.
 
