@@ -3,10 +3,10 @@ module.exports.processAction = processAction;
 module.exports.addPlayer = addPlayer;
 module.exports.removePlayer = removePlayer;
 module.exports.doesCircleOverlapPolygon = doesCircleOverlapPolygon;
+let players = [];
+module.exports.players = players;
 
 let _io = null;
-
-let players = [];
 let asteroids = [];
 let highScore = {name: '', score: 0};
 const width = 375, height = 375;
@@ -74,7 +74,7 @@ function addPlayer(id, io) {
     initialiseGame();
   }
   players.push({id: id, 
-    name: shipNames[players.length], 
+    name: shipNames.length > 0 ? shipNames.pop() : id, // if we run out of names use the id 
     x: width/2.0, 
     y: height/2.0, 
     direction: 2.0 * Math.PI * Math.random(), 
@@ -82,12 +82,32 @@ function addPlayer(id, io) {
     firing: false, 
     color: getRandomColor(), 
     score: 0, 
-    bulletActive: false, 
+    bulletActive: false,
     bulletX: 0, 
     bulletY: 0, 
     bulletDirection: 0});
 }
 
+function resetPlayer(id) {
+  const player = players[players.findIndex(i => i.id === id)];
+  player.x = width/2.0; 
+  player.y = height/2.0;
+  player.direction = 2.0 * Math.PI * Math.random(); 
+  player.firing = false; 
+  player.score = 0;
+  player.bulletActive = false; 
+  player.bulletX = 0; 
+  player.bulletY = 0; 
+  player.bulletDirection = 0;
+}
+
+function removePlayer(id) {
+  players.splice(players.findIndex(i => i.id === id), 1);
+  if (players.length == 0) {
+    clearInterval(intervalId);
+  }
+}
+  
 function addAsteroid() {
   if (asteroids.length < maxAsteroids) {
     const numbAsteroidVertices = 8.0;
@@ -109,7 +129,6 @@ function getRandDistFromCentre() {
   return 10 * (1 + Math.floor(2.0 * Math.random()));
 }
 
-
 function updateState() {
   players.forEach(player => {
     if (player.velocity > 0) {
@@ -128,8 +147,7 @@ function updateState() {
       players.forEach(playerCheckCollision => {
         if (player.id != playerCheckCollision.id) {
           if (player.bulletX > (playerCheckCollision.x - 10) && player.bulletX < (playerCheckCollision.x + 10) && player.bulletY > (playerCheckCollision.y - 10) && player.bulletY < (playerCheckCollision.y + 10)) {
-              removePlayer(playerCheckCollision.id); // There may be a bug here if two players are hit at once
-              addPlayer(playerCheckCollision.id);
+              resetPlayer(playerCheckCollision.id);
               increaseScore(player);
           }
         }
@@ -150,8 +168,7 @@ function updateState() {
         const point = points[n];
         if (isPointInPolygon(asteroidCheckCollision.vertices, point.x - asteroidCheckCollision.x, point.y - asteroidCheckCollision.y))
         {
-          removePlayer(player.id); // There may be a bug here if two players are hit at once
-          addPlayer(player.id);
+          resetPlayer(player.id);
           break;
         }
       };
@@ -231,13 +248,6 @@ function increaseScore(player) {
   }
 }
 
-function removePlayer(id) {
-  players.splice(players.findIndex(i => i.id === id), 1);
-  if (players.length == 0) {
-    clearInterval(intervalId);
-  }
-}
-  
 function wrapAroundScreen(body) {
   if (body.x > width) {
     body.x -= width;
@@ -250,4 +260,3 @@ function wrapAroundScreen(body) {
     body.y += height;
   }
 }
-

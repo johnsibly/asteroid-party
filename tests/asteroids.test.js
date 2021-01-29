@@ -1,6 +1,7 @@
-const asteroids = require('../gameLogic.js');
-const isPointInPolygon = asteroids.isPointInPolygon;
-const doesCircleOverlapPolygon = asteroids.doesCircleOverlapPolygon;
+const gameLogic = require('../gameLogic.js');
+const isPointInPolygon = gameLogic.isPointInPolygon;
+const doesCircleOverlapPolygon = gameLogic.doesCircleOverlapPolygon;
+const mockIO = { emit: function (command, state) { console.log("mockIO.emit called"); } };
 
 beforeEach(() => {
 });
@@ -23,5 +24,15 @@ it('Test circle just overlapping rectangle', () => {
     expect(doesCircleOverlapPolygon(polygon, testx, testy)).toEqual(true);
 });
 
-
+it('Add 2 players, remove 1, add 1 should all have unique names', () => {
+    console.debug();
+    gameLogic.addPlayer(1, mockIO);
+    gameLogic.addPlayer(2, mockIO);
+    const player2Name = gameLogic.players[1].name;
+    gameLogic.removePlayer(2);
+    gameLogic.addPlayer(3, mockIO);
+    const player3Name = gameLogic.players[1].name;
+    expect(gameLogic.players.length).toEqual(2);
+    expect(player2Name).not.toBe(player3Name);
+});
 
