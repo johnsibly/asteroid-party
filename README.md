@@ -36,11 +36,11 @@ Open the site
 
 #### Adding heroku remote for app already created (when this repo is cloned)
 
-git remote add heroku https://git.heroku.com/asteroid-party.git
+`git remote add heroku https://git.heroku.com/asteroid-party.git`
 
 #### Deploy updates to Heroku
 
-git push heroku main
+`git push heroku main`
 
 #### Test on your desktop or mobile browser 
 
