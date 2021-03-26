@@ -69,7 +69,11 @@ kubectl create deployment asteroid-party --image=johnsibly/asteroid-party
 kubectl expose deployment asteroid-party --port=3000 --type=NodePort --name=asteroid-party
 ```
 
-On deploying this, `kubectl get services` shows that there is no external IP set, so we need to set this (change IP to that of your node)
+After deploying `kubectl get services` shows that there is no external IP set so we need to specify this (change IP to that of your node)
 
 `kubectl patch svc asteroid-party -p '{"spec":{"externalIPs":["192.168.10.53"]}}'`
+
+Scale back down
+
+`kubectl scale deploy asteroid-party --replicas=0`
 
