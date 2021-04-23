@@ -12,7 +12,7 @@ Run locally using
 
 `node asteroids.js`
 
-Open [http://localhost:3000](http://localhost:3000) on your computer and use arrow keys to control your spaceship.
+Open [http://localhost:80](http://localhost:80) on your computer and use arrow keys to control your spaceship.
 
 ## Deployment options
 
@@ -58,7 +58,7 @@ Publish to a repository (e.g. dockerhub)
 
 Run using 
 
-`docker run -p 3000:3000 -d <your username>/asteroid-party`
+`docker run -p 80:80 -d <your username>/asteroid-party`
 
 ### Kubernetes
 
@@ -66,7 +66,7 @@ Assuming you have a cluster available and kubectl, run the following to deploy a
 
 ```
 kubectl create deployment asteroid-party --image=johnsibly/asteroid-party
-kubectl expose deployment asteroid-party --port=3000 --type=NodePort --name=asteroid-party
+kubectl expose deployment asteroid-party --port=80 --type=NodePort --name=asteroid-party
 ```
 
 After deploying `kubectl get services` shows that there is no external IP set so we need to specify this (change IP to that of your node)
