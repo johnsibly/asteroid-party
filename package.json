@@ -11,6 +11,7 @@
     "jest": "^26.5.3"
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "express": "^4.13.4",
     "socket.io": "^2.4.1"
   }

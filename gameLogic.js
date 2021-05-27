@@ -8,7 +8,7 @@ module.exports.players = players;
 
 let _io = null;
 let asteroids = [];
-let highScore = {name: '', score: 0};
+let highScore = {name: '', score: 0, location: ''};
 const width = 375, height = 375;
 const refreshInterval = 50;
 const asteroidSpawnInterval = 5000;
@@ -66,7 +66,7 @@ function getAngleOffset(direction, offset) {
   return newDirection;
 }
 
-function addPlayer(id, io) {
+function addPlayer(id, io, location) {
   if (io) {
     _io = io;
   }
@@ -85,7 +85,8 @@ function addPlayer(id, io) {
     bulletActive: false,
     bulletX: 0, 
     bulletY: 0, 
-    bulletDirection: 0});
+    bulletDirection: 0, 
+    location: location});
 }
 
 function resetPlayer(id) {
@@ -245,6 +246,7 @@ function increaseScore(player) {
   if (player.score > highScore.score) {
     highScore.name = player.name;
     highScore.score = player.score;
+    highScore.location = player.location;
   }
 }
 

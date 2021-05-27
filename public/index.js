@@ -97,8 +97,14 @@ socket.on('move', function(state){
   });
 
   if (state.highScore.score > 0) {
-    document.getElementById('highScore').innerText = `High score: ${state.highScore.name} scored ${state.highScore.score}`;
+    document.getElementById('highScore').innerText = `High score: ${state.highScore.name} scored ${state.highScore.score} from ${state.highScore.location}`;
+  } else {
+    document.getElementById('highScore').innerText = '';
   }
+  document.getElementById('highScore').innerText += '\n- - - - - - - - - - - - - - - - - - - - - - - - \nPlayers connected:';
+  state.players.forEach(player => {
+    document.getElementById('highScore').innerText += `\n${player.name} from ${player.location}`;
+  })
 });
 
 socket.on('pong', (latency) => {
