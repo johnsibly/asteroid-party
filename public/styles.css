@@ -5,6 +5,7 @@
   body {
     background: #000;
     color: #FFF;
+    font-family: Monospace;
   }
   button {
     width: 120px;
@@ -22,4 +23,7 @@
     background-color: black;
     -webkit-appearance: none;
     border-radius: 0;
+  }
+  p.normal {
+    font-style: normal;
   }
