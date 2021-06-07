@@ -27,7 +27,7 @@ io.on('connection', function(socket){
   let location = '';
   axios.get(`https://tools.keycdn.com/geo.json?host=${ip}`, {
     headers: {
-      'User-Agent': 'keycdn-tools:https://www.example.com'
+      'User-Agent': 'keycdn-tools:https://asteroid-party.herokuapp.com'
     }
   })
   .then(function (response) {
