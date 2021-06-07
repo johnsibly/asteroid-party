@@ -77,3 +77,6 @@ Scale back down
 
 `kubectl scale deploy asteroid-party --replicas=0`
 
+### Attributions
+
+[IP Location Finder by KeyCDN](https://tools.keycdn.com/geo)
