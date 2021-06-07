@@ -19,7 +19,7 @@ io.on('connection', function(socket){
   .then(function (response) {
     // handle success
     const geoResponse = response.data.data.geo;
-    location = geoResponse.region_name != '' ? geoResponse.region_name : geoResponse.ip;
+    location = geoResponse; // (geoResponse.region_name != '' && geoResponse.region_name != null) ? geoResponse.region_name : geoResponse.ip;
   })
   .catch(function (error) {
     // handle error
