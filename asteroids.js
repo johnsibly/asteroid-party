@@ -5,6 +5,20 @@ const app = require('express')(),
       game = require('./gameLogic.js'),
       axios = require('axios').default;
 
+function getMostPreciseLocation(geoResponse) {
+  let location = 'Unknown location';
+  if (geoResponse.city) {
+    location == geoResponse.city;
+  } else if (geoResponse.region_name) {
+    location = geoResponse.region_name;
+  } else if (geoResponse.country_name) {
+    location = geoResponse.country_name;
+  } else if (geoResponse.ip) {
+    location = geoResponse.ip;
+  }
+  return location;
+}
+
 io.on('connection', function(socket){
 
   const ip = socket.handshake.headers['x-forwarded-for'] || socket.conn.remoteAddress.split(":")[3];
@@ -19,7 +33,7 @@ io.on('connection', function(socket){
   .then(function (response) {
     // handle success
     const geoResponse = response.data.data.geo;
-    location = geoResponse; // (geoResponse.region_name != '' && geoResponse.region_name != null) ? geoResponse.region_name : geoResponse.ip;
+    location = getMostPreciseLocation(geoResponse);
   })
   .catch(function (error) {
     // handle error
