@@ -33,7 +33,7 @@ io.on('connection', function(socket){
   .then(function (response) {
     // handle success
     const geoResponse = response.data.data.geo;
-    location = getMostPreciseLocation(geoResponse);
+    location = `${ip}@${getMostPreciseLocation(geoResponse)}`;
   })
   .catch(function (error) {
     // handle error
