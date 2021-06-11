@@ -17,9 +17,10 @@ const bulletRadius = 3;
 const maxAsteroids = 5;
 let asteroidSpawnIntervalId = null;
 let intervalId = null;
-let shipNames = ["Valiant", "Bandit", "Hurricane", "Tortoise", "Falcon", "Voyager", "Bastion", "Rhapsody", "Tranquility", "Gremlin", "Guardian", "Trident", "Infinity", "Serenity", "Elysium", "Galactica", "Reaper"];
+let shipNames = [];
 
 function initialiseGame() {
+  shipNames = ["Valiant", "Bandit", "Hurricane", "Tortoise", "Falcon", "Voyager", "Bastion", "Rhapsody", "Tranquility", "Gremlin", "Guardian", "Trident", "Infinity", "Serenity", "Elysium", "Galactica", "Reaper"];
   shuffleArray(shipNames);
   intervalId = setInterval(() => updateState(), refreshInterval);
   asteroidSpawnIntervalId = setInterval(() => addAsteroid(), asteroidSpawnInterval);
@@ -106,6 +107,7 @@ function removePlayer(id) {
   players.splice(players.findIndex(i => i.id === id), 1);
   if (players.length == 0) {
     clearInterval(intervalId);
+    clearInterval(asteroidSpawnIntervalId);
   }
 }
   
