@@ -1,29 +1,16 @@
+/* eslint-disable no-console */
+/* eslint-disable no-plusplus */
+/* eslint-disable no-undef */
 let actionRepeatInterval = null;
-document.getElementById("button_left").addEventListener("touchstart", e => handleKeyOrMouseDown(e, 37));
-document.getElementById("button_right").addEventListener("touchstart", e => handleKeyOrMouseDown(e, 39));
-document.getElementById("button_fire").addEventListener("touchstart", e => handleKeyOrMouseDown(e, 32));
-document.getElementById("button_left").addEventListener("touchend", e => handleKeyOrMouseUp(e, 37));
-document.getElementById("button_right").addEventListener("touchend", e => handleKeyOrMouseUp(e, 39));
-document.getElementById("button_fire").addEventListener("touchend", e => handleKeyOrMouseUp(e, 32));
-
-document.getElementById("button_left").addEventListener("mousedown", e => handleKeyOrMouseDown(e, 37));
-document.getElementById("button_right").addEventListener("mousedown", e => handleKeyOrMouseDown(e, 39));
-document.getElementById("button_fire").addEventListener("mousedown", e => handleKeyOrMouseDown(e, 32));
-document.getElementById("button_left").addEventListener("mouseup", e => handleKeyOrMouseUp(e, 37));
-document.getElementById("button_right").addEventListener("mouseup", e => handleKeyOrMouseUp(e, 39));
-document.getElementById("button_fire").addEventListener("mouseup", e => handleKeyOrMouseUp(e, 32));
-document.addEventListener('keydown', event => handleKeyOrMouseDown(event, event.keyCode));
-document.addEventListener('keyup', e => handleKeyOrMouseUp(e, e.keyCode));
-
-const socket = io(),
-c=document.getElementById("canvas"),
-ctx=c.getContext("2d");
+const socket = io();
+const c = document.getElementById('canvas');
+const ctx = c.getContext('2d');
 ctx.strokeStyle = 'white';
 
 let currrentKeyPressedDown = null;
 
 function handleKeyOrMouseDown(e, keyCode) {
-  if (typeof e.preventDefault == 'function') { 
+  if (typeof e.preventDefault === 'function') {
     e.preventDefault();
   }
   currrentKeyPressedDown = keyCode;
@@ -33,30 +20,46 @@ function handleKeyOrMouseDown(e, keyCode) {
   }
 }
 
-function handleKeyOrMouseUp(e, keyCode) {
+function handleKeyOrMouseUp(e) {
   currrentKeyPressedDown = null;
-  if (typeof e.preventDefault == 'function') { 
+  if (typeof e.preventDefault === 'function') {
     e.preventDefault();
   }
   if (actionRepeatInterval) {
     clearInterval(actionRepeatInterval);
     actionRepeatInterval = null;
-  } 
+  }
 }
 
+document.getElementById('button_left').addEventListener('touchstart', (e) => handleKeyOrMouseDown(e, 37));
+document.getElementById('button_right').addEventListener('touchstart', (e) => handleKeyOrMouseDown(e, 39));
+document.getElementById('button_fire').addEventListener('touchstart', (e) => handleKeyOrMouseDown(e, 32));
+document.getElementById('button_left').addEventListener('touchend', (e) => handleKeyOrMouseUp(e, 37));
+document.getElementById('button_right').addEventListener('touchend', (e) => handleKeyOrMouseUp(e, 39));
+document.getElementById('button_fire').addEventListener('touchend', (e) => handleKeyOrMouseUp(e, 32));
+
+document.getElementById('button_left').addEventListener('mousedown', (e) => handleKeyOrMouseDown(e, 37));
+document.getElementById('button_right').addEventListener('mousedown', (e) => handleKeyOrMouseDown(e, 39));
+document.getElementById('button_fire').addEventListener('mousedown', (e) => handleKeyOrMouseDown(e, 32));
+document.getElementById('button_left').addEventListener('mouseup', (e) => handleKeyOrMouseUp(e, 37));
+document.getElementById('button_right').addEventListener('mouseup', (e) => handleKeyOrMouseUp(e, 39));
+document.getElementById('button_fire').addEventListener('mouseup', (e) => handleKeyOrMouseUp(e, 32));
+document.addEventListener('keydown', (event) => handleKeyOrMouseDown(event, event.keyCode));
+document.addEventListener('keyup', (e) => handleKeyOrMouseUp(e, e.keyCode));
+
 function getAngleOffset(direction, offset) {
-newDirection = direction + offset * Math.PI;
+  let newDirection = direction + offset * Math.PI;
   while (newDirection > (2 * Math.PI)) {
     newDirection -= (2 * Math.PI);
   }
   return newDirection;
 }
 
-socket.on('move', function(state){
+socket.on('move', (state) => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.strokeRect(0, 0, canvas.width, canvas.height);
 
-  state.players.forEach(player => {
+  state.players.forEach((player) => {
     ctx.fillStyle = player.color;
     ctx.beginPath();
 
@@ -85,12 +88,12 @@ socket.on('move', function(state){
     ctx.fillText(`${playerName} [${player.score}]`, player.x, player.y - 20);
   });
 
-  state.asteroids.forEach(asteroid => {
+  state.asteroids.forEach((asteroid) => {
     ctx.beginPath();
     ctx.moveTo(asteroid.x + asteroid.vertices[0].x, asteroid.y + asteroid.vertices[0].y);
-    let angle = (2.0 * Math.PI) / asteroid.vertices.length;
     for (let vertex = 1; vertex < asteroid.vertices.length; vertex++) {
-      ctx.lineTo(asteroid.x + asteroid.vertices[vertex].x, asteroid.y + asteroid.vertices[vertex].y);
+      ctx.lineTo(asteroid.x + asteroid.vertices[vertex].x,
+        asteroid.y + asteroid.vertices[vertex].y);
     }
     ctx.closePath();
     ctx.stroke();
@@ -103,7 +106,7 @@ socket.on('move', function(state){
 
 socket.on('pong', (latency) => {
   const now = new Date();
-  const latencyString = `Latency ${latency}ms at ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`
+  const latencyString = `Latency ${latency}ms at ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
   console.log(latencyString);
-  document.getElementById('latency').innerText = latencyString
+  document.getElementById('latency').innerText = latencyString;
 });
