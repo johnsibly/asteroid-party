@@ -34,5 +34,8 @@ it('Add 2 players, remove 1, add 1 should all have unique names', () => {
     const player3Name = gameLogic.players[1].name;
     expect(gameLogic.players.length).toEqual(2);
     expect(player2Name).not.toBe(player3Name);
+    // clean up to allow jest to shutdown cleanly
+    gameLogic.removePlayer(1);
+    gameLogic.removePlayer(3);
 });
 
